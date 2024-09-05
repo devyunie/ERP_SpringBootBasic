@@ -20,7 +20,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.hmy.springbasic.filter.JwtAuthenticationFilter;
-import com.nimbusds.oauth2.sdk.AuthorizationResponse;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -97,13 +96,10 @@ public class WebSecurityConfig {
                     //anyRequest() : requestMatchers로 지정한 메서드 혹은 URL이 아닌 모든 요청
                     .anyRequest().authenticated()
                 )
-                .oauth2Client(oauth2 -> oauth2
-                    .redirectionEndpoint(endPoint- > endPoint.baseUri(AuthorizationResponse))
+                //github oauth2 Login
+                .oauth2Login(oauth2->oauth2
+                    .redirectionEndpoint(endPoint -> endPoint.baseUri("/oauth2/callback/*"))
                 )
-
-
-
-
 
                 //인증 및 인가 과정에서 발생한 예외를 직접 처리
                 .exceptionHandling(exceptionHandling -> exceptionHandling

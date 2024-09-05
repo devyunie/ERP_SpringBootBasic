@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.hmy.springbasic.filter.JwtAuthenticationFilter;
+import com.nimbusds.oauth2.sdk.AuthorizationResponse;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -86,7 +87,7 @@ public class WebSecurityConfig {
                     // .premitAll() : 모든 클라이언트가 접근할 수 있도록 지정
                     // .hasRole() : 특정권한을 가진 클라이언트만 접근 할수 있도록 지정
                     // .authenticated() : 인증된 모든 클라이언트가 접근할 수 있도록 지정
-                    .requestMatchers("/anyone/**","/auth/**").permitAll()
+                    .requestMatchers("/anyone/**","/auth/**","/oauth2/**").permitAll()
                     .requestMatchers(HttpMethod.GET,"/sample/jwt/*").permitAll()
                     .requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/service").hasRole("ADMIN")
@@ -97,7 +98,7 @@ public class WebSecurityConfig {
                     .anyRequest().authenticated()
                 )
                 .oauth2Client(oauth2 -> oauth2
-                    .re
+                    .redirectionEndpoint(endPoint- > endPoint.baseUri(AuthorizationResponse))
                 )
 
 

@@ -96,6 +96,14 @@ public class WebSecurityConfig {
                     //anyRequest() : requestMatchers로 지정한 메서드 혹은 URL이 아닌 모든 요청
                     .anyRequest().authenticated()
                 )
+                .oauth2Client(oauth2 -> oauth2
+                    .re
+                )
+
+
+
+
+
                 //인증 및 인가 과정에서 발생한 예외를 직접 처리
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                     .authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
@@ -120,6 +128,9 @@ public class WebSecurityConfig {
         return source;
     }
 }
+
+//OAuth2 인증 처라
+
 
 // 인증 및 인가 실패 처리를 위한 커스텀 예외 처리 AuthenticationEntryPoint 인터페이스 구현
 class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint{

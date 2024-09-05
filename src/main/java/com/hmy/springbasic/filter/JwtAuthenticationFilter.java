@@ -12,10 +12,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.hmy.springbasic.entity.SampleUserEntity;
 import com.hmy.springbasic.provider.JwtProvider;
 import com.hmy.springbasic.repository.SampleUserRepository;
 
@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 // - 서버로직과 서블릿 사이에서 http request에 대한 사전 검사 작업을 수행하는 영역
 // - filter에서 걸러진 request는 서블릿까지 도달하지 못하고 reject됨
 
+@Component
 @RequiredArgsConstructor
 // OncePerRequestFilter 라는 추상 클래스를 확장 구현하여 filter로 생성
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -55,11 +56,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             // 3. 데이터베이스에 존재하는 유저인가 확인
-            SampleUserEntity userEntity = sampleUserRepository.findByUserId(subject);
-            if(userEntity == null){
-                filterChain.doFilter(request, response);
-                return;
-            }
+            // SampleUserEntity userEntity = sampleUserRepository.findByUserId(subject);
+            // if(userEntity == null){
+            //     filterChain.doFilter(request, response);
+            //     return;
+            // }
             
             //4. 접근주체의 권한 리스트 지정
             List<GrantedAuthority> roles = AuthorityUtils.NO_AUTHORITIES; //빈권한 리스트 생성
@@ -72,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             //5.1 인증된 사용자 객체를 생성
             //UsernamePasswordAuthenticationToken(사용자 정보, 비밀번호, 권한);을 받아옴
             AbstractAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(userEntity,null , roles);
+                = new UsernamePasswordAuthenticationToken(subject,null , roles);
             
             //5.2 인증 정보에 상세 리퀘스트를 등록
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -96,7 +97,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // String authorization = request.getHeader("Authorization");
 
     }
-
+//-------------------------
     // 1. request 객체 header 중 'Authorization'필드의 값을 가져옴
     // 2. 'Authorization' 필드 값이 Bearer 형식인지 확인
     // 3. 'Authorization' 필드 값에서 토큰을 추출
